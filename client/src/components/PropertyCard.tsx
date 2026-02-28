@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { imageUrl } from "@/lib/api";
 import type { Property } from "@/types";
 
 interface PropertyCardProps {
@@ -23,7 +24,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         <div className="relative h-48 bg-linear-to-br from-blue-100 to-blue-50 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center overflow-hidden">
           {property.images && property.images.length > 0 ? (
             <Image
-              src={property.images[0].url}
+              src={imageUrl(property.images[0].url)}
               alt={property.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"

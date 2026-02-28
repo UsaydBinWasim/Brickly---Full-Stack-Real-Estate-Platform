@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const path = require("path");
 
 const authRoutes = require("./routes/auth.routes");
 const propertyRoutes = require("./routes/property.routes");
@@ -13,7 +14,7 @@ const errorHandler = require("./middleware/error.middleware");
 const app = express();
 
 // --------------- Global Middleware ---------------
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
+
+// --------------- Static Files --------------------
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // --------------- Health Check --------------------
 app.get("/api/health", (_req, res) => {

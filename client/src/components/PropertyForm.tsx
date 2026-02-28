@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { imageUrl } from "@/lib/api";
 
 interface PropertyFormData {
   title: string;
@@ -221,7 +222,7 @@ export default function PropertyForm({
             {keptExisting.map((img) => (
               <div key={img.publicId} className="relative group rounded-lg overflow-hidden h-24 border border-border">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img.url} alt="Existing" className="w-full h-full object-cover" />
+                <img src={imageUrl(img.url)} alt="Existing" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                 <button
                   type="button"

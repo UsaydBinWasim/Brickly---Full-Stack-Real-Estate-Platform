@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { apiFetch, getToken, getUser } from "@/lib/api";
+import { apiFetch, getToken, getUser, imageUrl } from "@/lib/api";
 import type { Property } from "@/types";
 
 export default function PropertyDetailPage() {
@@ -92,7 +92,7 @@ export default function PropertyDetailPage() {
           <div className="rounded-xl overflow-hidden bg-linear-to-br from-blue-100 to-blue-50 h-80 sm:h-96 flex items-center justify-center relative">
             {property.images && property.images.length > 0 ? (
               <Image
-                src={property.images[activeImage]?.url}
+                src={imageUrl(property.images[activeImage]?.url)}
                 alt={property.title}
                 fill
                 className="object-cover"
@@ -117,7 +117,7 @@ export default function PropertyDetailPage() {
                     activeImage === i ? "border-primary" : "border-transparent hover:border-gray-300"
                   }`}
                 >
-                  <Image src={img.url} alt={`Photo ${i + 1}`} fill className="object-cover" sizes="100px" />
+                  <Image src={imageUrl(img.url)} alt={`Photo ${i + 1}`} fill className="object-cover" sizes="100px" />
                 </button>
               ))}
             </div>

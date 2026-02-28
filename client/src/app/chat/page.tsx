@@ -79,6 +79,9 @@ export default function ChatPage() {
     socket.emit("joinConversation", activeConvId);
 
     const handleNewMessage = (msg: Message) => {
+      // Skip messages sent by the current user — already added from the API response
+      if (msg.sender._id === user?._id || msg.sender === user?._id) return;
+
       setMessages((prev) => [...prev, msg]);
       // Update conversation list
       setConversations((prev) =>

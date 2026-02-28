@@ -1,13 +1,28 @@
 const Property = require("../models/property.model");
 
 /**
+ * Build an image object from a multer file.
+ * Cloudinary files have a full URL in file.path;
+ * local disk files need to be turned into a served URL.
+ */
+function fileToImage(file) {
+  // Cloudinary: file.path is a full https:// URL
+  if (file.path && file.path.startsWith("http")) {
+    return { url: file.path, publicId: file.filename };
+  }
+  // Local disk: build a relative URL served by express.static
+  const filename = file.filename || require("path").basename(file.path);
+  return {
+    url: `/uploads/properties/${filename}`,
+    publicId: filename,
+  };
+}
+
+/**
  * Create a new property listing.
  */
 const createProperty = async (data, userId, files = []) => {
-  const images = files.map((file) => ({
-    url: file.path,
-    publicId: file.filename,
-  }));
+  const images = files.map(fileToImage);
 
   const property = await Property.create({
     ...data,
@@ -117,10 +132,7 @@ const updateProperty = async (id, userId, role, updateData, files = []) => {
     const keptImages = property.images.filter((img) =>
       keepIds.includes(img.publicId)
     );
-    const newImages = files.map((file) => ({
-      url: file.path,
-      publicId: file.filename,
-    }));
+    const newImages = files.map(fileToImage);
     property.images = [...keptImages, ...newImages];
   }
   delete updateData.keepImages;
