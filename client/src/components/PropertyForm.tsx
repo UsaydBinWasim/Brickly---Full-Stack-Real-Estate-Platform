@@ -13,11 +13,18 @@ interface PropertyFormData {
   type: "rent" | "sale";
 }
 
+interface ExistingImage {
+  url: string;
+  publicId: string;
+}
+
 interface PropertyFormProps {
   initialData?: Partial<PropertyFormData>;
-  onSubmit: (data: PropertyFormData, images: File[]) => void;
+  existingImages?: ExistingImage[];
+  onSubmit: (data: PropertyFormData, images: File[], keepImages: string[]) => void;
   submitLabel?: string;
   loading?: boolean;
+  editWarning?: boolean;
 }
 
 const emptyForm: PropertyFormData = {
@@ -33,9 +40,11 @@ const emptyForm: PropertyFormData = {
 
 export default function PropertyForm({
   initialData,
+  existingImages = [],
   onSubmit,
   submitLabel = "Submit",
   loading = false,
+  editWarning = false,
 }: PropertyFormProps) {
   const [form, setForm] = useState<PropertyFormData>({
     ...emptyForm,
@@ -43,7 +52,10 @@ export default function PropertyForm({
   });
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [keptExisting, setKeptExisting] = useState<ExistingImage[]>(existingImages);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const totalImages = keptExisting.length + images.length;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -53,31 +65,41 @@ export default function PropertyForm({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (images.length + files.length > 6) {
+    if (totalImages + files.length > 6) {
       alert("Maximum 6 images allowed");
       return;
     }
     const newImages = [...images, ...files];
     setImages(newImages);
 
-    // Generate previews
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setPreviews((prev) => [...prev, ...newPreviews]);
   };
 
-  const removeImage = (index: number) => {
+  const removeNewImage = (index: number) => {
     URL.revokeObjectURL(previews[index]);
     setImages((prev) => prev.filter((_, i) => i !== index));
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const removeExistingImage = (publicId: string) => {
+    setKeptExisting((prev) => prev.filter((img) => img.publicId !== publicId));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(form, images);
+    const keepIds = keptExisting.map((img) => img.publicId);
+    onSubmit(form, images, keepIds);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {editWarning && (
+        <div className="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 px-4 py-3 text-sm text-yellow-800 dark:text-yellow-200">
+          <strong>Note:</strong> Editing this listing will reset its status to <em>pending</em> and require re-approval by an admin.
+        </div>
+      )}
+
       {/* Title */}
       <div>
         <label className="block text-sm font-medium text-foreground mb-1">Title</label>
@@ -86,7 +108,7 @@ export default function PropertyForm({
           value={form.title}
           onChange={handleChange}
           required
-          className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           placeholder="Modern 3-bed apartment in Downtown"
         />
       </div>
@@ -100,7 +122,7 @@ export default function PropertyForm({
           onChange={handleChange}
           required
           rows={4}
-          className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition resize-none"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition resize-none"
           placeholder="Describe the property..."
         />
       </div>
@@ -116,7 +138,7 @@ export default function PropertyForm({
             onChange={handleChange}
             required
             min={0}
-            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
             placeholder="250000"
           />
         </div>
@@ -126,7 +148,7 @@ export default function PropertyForm({
             name="type"
             value={form.type}
             onChange={handleChange}
-            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition bg-white"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           >
             <option value="sale">For Sale</option>
             <option value="rent">For Rent</option>
@@ -142,7 +164,7 @@ export default function PropertyForm({
           value={form.location}
           onChange={handleChange}
           required
-          className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           placeholder="New York, NY"
         />
       </div>
@@ -157,7 +179,7 @@ export default function PropertyForm({
             value={form.bedrooms}
             onChange={handleChange}
             min={0}
-            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
             placeholder="3"
           />
         </div>
@@ -169,7 +191,7 @@ export default function PropertyForm({
             value={form.bathrooms}
             onChange={handleChange}
             min={0}
-            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
             placeholder="2"
           />
         </div>
@@ -181,7 +203,7 @@ export default function PropertyForm({
             value={form.area}
             onChange={handleChange}
             min={0}
-            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
             placeholder="1200"
           />
         </div>
@@ -190,28 +212,54 @@ export default function PropertyForm({
       {/* Image Upload */}
       <div>
         <label className="block text-sm font-medium text-foreground mb-1">
-          Property Images (max 6)
+          Property Images ({totalImages}/6)
         </label>
-        <div
-          onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
-        >
-          <svg className="w-8 h-8 mx-auto text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <p className="text-sm text-muted">Click to upload images</p>
-          <p className="text-xs text-muted mt-1">JPG, PNG, WebP — max 5MB each</p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            multiple
-            onChange={handleImageChange}
-            className="hidden"
-          />
-        </div>
 
-        {/* Image Previews */}
+        {/* Existing images */}
+        {keptExisting.length > 0 && (
+          <div className="mb-3 grid grid-cols-3 gap-3">
+            {keptExisting.map((img) => (
+              <div key={img.publicId} className="relative group rounded-lg overflow-hidden h-24 border border-border">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img.url} alt="Existing" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                <button
+                  type="button"
+                  onClick={() => removeExistingImage(img.publicId)}
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  ×
+                </button>
+                <span className="absolute bottom-1 left-1 bg-black/50 text-white text-[9px] px-1.5 py-0.5 rounded">
+                  Existing
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {totalImages < 6 && (
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
+          >
+            <svg className="w-8 h-8 mx-auto text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p className="text-sm text-muted">Click to upload images</p>
+            <p className="text-xs text-muted mt-1">JPG, PNG, WebP — max 5MB each</p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </div>
+        )}
+
+        {/* New image previews */}
         {previews.length > 0 && (
           <div className="mt-3 grid grid-cols-3 gap-3">
             {previews.map((src, i) => (
@@ -220,11 +268,14 @@ export default function PropertyForm({
                 <img src={src} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
                 <button
                   type="button"
-                  onClick={() => removeImage(i)}
+                  onClick={() => removeNewImage(i)}
                   className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   ×
                 </button>
+                <span className="absolute bottom-1 left-1 bg-primary/80 text-white text-[9px] px-1.5 py-0.5 rounded">
+                  New
+                </span>
               </div>
             ))}
           </div>

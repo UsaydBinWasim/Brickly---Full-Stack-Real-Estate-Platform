@@ -25,7 +25,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+      <section className="bg-linear-to-br from-blue-600 to-blue-800 dark:from-blue-900 dark:to-slate-900 text-white">
         <div className="mx-auto max-w-7xl px-6 py-24 lg:py-32 text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
             Find Your Dream<br className="hidden sm:block" /> Property with <span className="text-blue-200">Brickly</span>
@@ -51,7 +51,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Bar */}
-      <section className="border-b border-border bg-white">
+      <section className="border-b border-border bg-surface">
         <div className="mx-auto max-w-7xl px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           {[
             { value: "2,500+", label: "Active Listings" },
@@ -76,7 +76,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/properties"
-            className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:text-foreground hover:bg-gray-50 transition-colors"
+            className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:text-foreground hover:bg-surface-hover transition-colors"
           >
             View All
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,13 +91,13 @@ export default function HomePage() {
                 <PropertyCard key={property._id} property={property} />
               ))
             : [1, 2, 3].map((i) => (
-                <div key={i} className="rounded-xl bg-white border border-border shadow-sm p-8 text-center text-muted animate-pulse h-64" />
+                <div key={i} className="rounded-xl bg-surface border border-border shadow-sm p-8 text-center text-muted animate-pulse h-64" />
               ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="bg-gray-50 border-t border-border">
+      <section className="bg-surface-alt border-t border-border">
         <div className="mx-auto max-w-7xl px-6 py-16 text-center">
           <h2 className="text-2xl font-bold">Ready to list your property?</h2>
           <p className="mt-2 text-muted max-w-lg mx-auto">

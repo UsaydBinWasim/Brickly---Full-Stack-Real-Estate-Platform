@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useSyncExternalStore } from "react";
 import { getToken, logout, apiFetch } from "@/lib/api";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const publicLinks = [
   { href: "/", label: "Home" },
@@ -59,7 +60,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-border">
+    <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur border-b border-border">
       <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="text-xl font-bold tracking-tight text-primary">
@@ -85,14 +86,15 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Auth buttons */}
+        {/* Auth buttons + theme toggle */}
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           {isLoggedIn ? (
             <>
               <span className="text-sm text-muted">{user?.email}</span>
               <button
                 onClick={logout}
-                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:text-foreground hover:bg-gray-50 transition-colors"
+                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:text-foreground hover:bg-surface-hover transition-colors"
               >
                 Logout
               </button>
@@ -116,11 +118,13 @@ export default function Navbar() {
         </div>
 
         {/* Mobile hamburger */}
-        <button
-          className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            className="p-2 rounded-lg hover:bg-surface-hover transition-colors"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {mobileOpen ? (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -129,11 +133,12 @@ export default function Navbar() {
             )}
           </svg>
         </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-white px-6 pb-4">
+        <div className="md:hidden border-t border-border bg-surface px-6 pb-4">
           <ul className="flex flex-col gap-3 pt-3">
             {navLinks.map((link) => (
               <li key={link.href}>

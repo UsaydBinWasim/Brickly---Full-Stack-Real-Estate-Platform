@@ -71,11 +71,11 @@ function PropertiesContent() {
         {/* Right: Property grid */}
         <div className="flex-1">
           {loading ? (
-            <div className="rounded-xl bg-white border border-border shadow-sm p-12 text-center">
+            <div className="rounded-xl bg-surface border border-border shadow-sm p-12 text-center">
               <p className="text-muted">Loading properties...</p>
             </div>
           ) : properties.length === 0 ? (
-            <div className="rounded-xl bg-white border border-border shadow-sm p-12 text-center">
+            <div className="rounded-xl bg-surface border border-border shadow-sm p-12 text-center">
               <p className="text-muted">No properties match your filters.</p>
             </div>
           ) : (
@@ -92,7 +92,7 @@ function PropertiesContent() {
               <button
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted disabled:opacity-50 hover:bg-surface-hover transition-colors"
               >
                 Previous
               </button>
@@ -102,7 +102,7 @@ function PropertiesContent() {
               <button
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted disabled:opacity-50 hover:bg-surface-hover transition-colors"
               >
                 Next
               </button>

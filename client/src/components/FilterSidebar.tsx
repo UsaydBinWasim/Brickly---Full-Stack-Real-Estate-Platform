@@ -48,7 +48,7 @@ export default function FilterSidebar() {
 
   return (
     <aside className="w-full lg:w-72 shrink-0">
-      <div className="rounded-xl bg-white border border-border shadow-sm p-6 space-y-5">
+      <div className="rounded-xl bg-surface border border-border shadow-sm p-6 space-y-5">
         <h2 className="text-lg font-semibold">Filters</h2>
 
         {/* Location */}
@@ -59,7 +59,7 @@ export default function FilterSidebar() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="e.g. New York"
-            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           />
         </div>
 
@@ -69,7 +69,7 @@ export default function FilterSidebar() {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition bg-white"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           >
             {propertyTypes.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -108,14 +108,14 @@ export default function FilterSidebar() {
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
               placeholder="Min"
-              className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
             />
             <input
               type="number"
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
               placeholder="Max"
-              className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function FilterSidebar() {
           </button>
           <button
             onClick={clearFilters}
-            className="flex-1 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-gray-50 transition-colors"
+            className="flex-1 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-surface-hover transition-colors"
           >
             Clear
           </button>

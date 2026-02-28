@@ -101,10 +101,10 @@ export default function AdminPage() {
       {/* Status summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: "All", value: counts.all, filter: "" as StatusFilter, color: "bg-blue-50 text-blue-700" },
-          { label: "Pending", value: counts.pending, filter: "pending" as StatusFilter, color: "bg-yellow-50 text-yellow-700" },
-          { label: "Approved", value: counts.approved, filter: "approved" as StatusFilter, color: "bg-green-50 text-green-700" },
-          { label: "Rejected", value: counts.rejected, filter: "rejected" as StatusFilter, color: "bg-red-50 text-red-700" },
+          { label: "All", value: counts.all, filter: "" as StatusFilter, color: "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" },
+          { label: "Pending", value: counts.pending, filter: "pending" as StatusFilter, color: "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300" },
+          { label: "Approved", value: counts.approved, filter: "approved" as StatusFilter, color: "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300" },
+          { label: "Rejected", value: counts.rejected, filter: "rejected" as StatusFilter, color: "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300" },
         ].map((card) => (
           <button
             key={card.label}
@@ -113,7 +113,7 @@ export default function AdminPage() {
               statusFilter === card.filter
                 ? "border-primary shadow-md"
                 : "border-border shadow-sm hover:shadow-md"
-            } bg-white`}
+            } bg-surface`}
           >
             <p className="text-2xl font-bold">{card.value}</p>
             <p className={`mt-1 text-xs font-semibold rounded-full inline-block px-2 py-0.5 ${card.color}`}>

@@ -83,8 +83,9 @@ const getPropertyById = async (id) => {
 
 /**
  * Update a property (owner or admin only).
+ * When a non-admin edits, the status resets to "pending" for re-approval.
  */
-const updateProperty = async (id, userId, role, updateData) => {
+const updateProperty = async (id, userId, role, updateData, files = []) => {
   const property = await Property.findById(id);
 
   if (!property) {
@@ -102,12 +103,40 @@ const updateProperty = async (id, userId, role, updateData) => {
     throw err;
   }
 
+  // Handle image updates
+  if (files.length > 0 || updateData.keepImages !== undefined) {
+    // Parse keepImages — publicIds of existing images the user wants to keep
+    let keepIds = [];
+    if (updateData.keepImages) {
+      try {
+        keepIds = JSON.parse(updateData.keepImages);
+      } catch {
+        keepIds = [];
+      }
+    }
+    const keptImages = property.images.filter((img) =>
+      keepIds.includes(img.publicId)
+    );
+    const newImages = files.map((file) => ({
+      url: file.path,
+      publicId: file.filename,
+    }));
+    property.images = [...keptImages, ...newImages];
+  }
+  delete updateData.keepImages;
+
   // Prevent non-admins from changing status directly
   if (!isAdmin) {
     delete updateData.status;
   }
 
   Object.assign(property, updateData);
+
+  // Re-approval: non-admin edits reset status to pending
+  if (!isAdmin) {
+    property.status = "pending";
+  }
+
   await property.save();
 
   return property;

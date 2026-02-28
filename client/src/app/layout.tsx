@@ -13,13 +13,19 @@ export const metadata: Metadata = {
   description: "Modern real estate listing platform. Browse, list, and manage properties with ease.",
 };
 
+// Inline script to prevent flash of wrong theme
+const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className={`${geistSans.variable} font-sans antialiased bg-background text-foreground`}>
         <Navbar />
         <main className="min-h-screen">{children}</main>

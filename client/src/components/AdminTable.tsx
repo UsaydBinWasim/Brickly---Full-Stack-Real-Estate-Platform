@@ -11,9 +11,9 @@ interface AdminTableProps {
 
 function StatusBadge({ status }: { status: Property["status"] }) {
   const styles: Record<Property["status"], string> = {
-    pending: "bg-yellow-100 text-yellow-800",
-    approved: "bg-green-100 text-green-800",
-    rejected: "bg-red-100 text-red-800",
+    pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+    approved: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+    rejected: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
   };
 
   return (
@@ -26,18 +26,18 @@ function StatusBadge({ status }: { status: Property["status"] }) {
 export default function AdminTable({ properties, onApprove, onReject, loading }: AdminTableProps) {
   if (properties.length === 0) {
     return (
-      <div className="rounded-xl bg-white border border-border shadow-sm p-12 text-center">
+      <div className="rounded-xl bg-surface border border-border shadow-sm p-12 text-center">
         <p className="text-muted">No properties found.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl bg-white border border-border shadow-sm overflow-hidden">
+    <div className="rounded-xl bg-surface border border-border shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border bg-gray-50/50">
+            <tr className="border-b border-border bg-surface-alt">
               <th className="px-6 py-3 text-left font-semibold text-muted">Title</th>
               <th className="px-6 py-3 text-left font-semibold text-muted">Location</th>
               <th className="px-6 py-3 text-left font-semibold text-muted">Price</th>
@@ -48,7 +48,7 @@ export default function AdminTable({ properties, onApprove, onReject, loading }:
           </thead>
           <tbody className="divide-y divide-border">
             {properties.map((property) => (
-              <tr key={property._id} className="hover:bg-gray-50/50 transition-colors">
+              <tr key={property._id} className="hover:bg-surface-hover transition-colors">
                 <td className="px-6 py-4 font-medium text-foreground whitespace-nowrap">
                   {property.title}
                 </td>

@@ -18,9 +18,9 @@ function formatPrice(price: number, type?: string): string {
 export default function PropertyCard({ property }: PropertyCardProps) {
   return (
     <Link href={`/properties/${property._id}`} className="group block">
-      <div className="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-border">
+      <div className="rounded-xl bg-surface shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-border">
         {/* Image */}
-        <div className="relative h-48 bg-linear-to-br from-blue-100 to-blue-50 flex items-center justify-center overflow-hidden">
+        <div className="relative h-48 bg-linear-to-br from-blue-100 to-blue-50 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center overflow-hidden">
           {property.images && property.images.length > 0 ? (
             <Image
               src={property.images[0].url}

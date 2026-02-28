@@ -165,7 +165,7 @@ export default function ChatPage() {
     <div className="mx-auto max-w-7xl px-6 py-6">
       <h1 className="text-2xl font-bold mb-6">Messages</h1>
 
-      <div className="flex h-[calc(100vh-200px)] rounded-xl border border-border bg-white shadow-sm overflow-hidden">
+      <div className="flex h-[calc(100vh-200px)] rounded-xl border border-border bg-surface shadow-sm overflow-hidden">
         {/* Conversation list sidebar */}
         <div
           className={`${
@@ -197,7 +197,7 @@ export default function ChatPage() {
                       router.push(`/chat?c=${conv._id}`);
                       setSidebarOpen(window.innerWidth >= 768);
                     }}
-                    className={`w-full text-left p-4 border-b border-border hover:bg-gray-50 transition-colors ${
+                    className={`w-full text-left p-4 border-b border-border hover:bg-surface-hover transition-colors ${
                       isActive ? "bg-primary/5 border-l-2 border-l-primary" : ""
                     }`}
                   >
@@ -238,10 +238,10 @@ export default function ChatPage() {
           ) : (
             <>
               {/* Chat header */}
-              <div className="flex items-center gap-3 p-4 border-b border-border bg-gray-50/50">
+              <div className="flex items-center gap-3 p-4 border-b border-border bg-surface-alt">
                 <button
                   onClick={() => setSidebarOpen(!sidebarOpen)}
-                  className="p-1 rounded hover:bg-gray-200 transition-colors md:hidden"
+                  className="p-1 rounded hover:bg-surface-hover transition-colors md:hidden"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -279,7 +279,7 @@ export default function ChatPage() {
                         className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-sm ${
                           isMine
                             ? "bg-primary text-white rounded-br-md"
-                            : "bg-gray-100 text-foreground rounded-bl-md"
+                            : "bg-surface-alt text-foreground rounded-bl-md"
                         }`}
                       >
                         <p className="whitespace-pre-wrap wrap-break-word">{msg.content}</p>
@@ -299,7 +299,7 @@ export default function ChatPage() {
                 })}
                 {typing && (
                   <div className="flex justify-start">
-                    <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-muted">
+                    <div className="bg-surface-alt rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-muted">
                       <span className="flex gap-1">
                         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
                         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.1s]" />
@@ -327,7 +327,7 @@ export default function ChatPage() {
                       }
                     }}
                     placeholder="Type a message..."
-                    className="flex-1 rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                    className="flex-1 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                   />
                   <button
                     onClick={handleSend}

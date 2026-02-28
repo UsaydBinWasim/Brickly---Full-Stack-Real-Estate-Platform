@@ -14,7 +14,7 @@ export default function DashboardSidebar() {
 
   return (
     <aside className="w-full lg:w-64 shrink-0">
-      <nav className="rounded-xl bg-white border border-border shadow-sm p-4 space-y-1">
+      <nav className="rounded-xl bg-surface border border-border shadow-sm p-4 space-y-1">
         <h2 className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-muted">
           Dashboard
         </h2>
@@ -27,7 +27,7 @@ export default function DashboardSidebar() {
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 isActive
                   ? "bg-primary/10 text-primary"
-                  : "text-muted hover:bg-gray-50 hover:text-foreground"
+                  : "text-muted hover:bg-surface-hover hover:text-foreground"
               }`}
             >
               <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

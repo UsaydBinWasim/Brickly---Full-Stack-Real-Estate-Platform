@@ -40,14 +40,14 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-6 py-12">
       <div className="w-full max-w-md">
-        <div className="rounded-xl bg-white border border-border shadow-sm p-8">
+        <div className="rounded-xl bg-surface border border-border shadow-sm p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold">Welcome back</h1>
             <p className="mt-1 text-sm text-muted">Sign in to your Dwellix account</p>
           </div>
 
           {error && (
-            <div className="mb-5 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+            <div className="mb-5 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-3 text-sm text-red-700 dark:text-red-300">
               {error}
             </div>
           )}
@@ -60,7 +60,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                 placeholder="you@example.com"
               />
             </div>
@@ -73,7 +73,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                 placeholder="••••••••"
               />
             </div>

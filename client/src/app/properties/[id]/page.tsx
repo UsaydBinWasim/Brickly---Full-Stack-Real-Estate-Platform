@@ -138,7 +138,7 @@ export default function PropertyDetailPage() {
           )}
 
           {/* Description */}
-          <div className="rounded-xl bg-white border border-border shadow-sm p-6">
+          <div className="rounded-xl bg-surface border border-border shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-3">Description</h2>
             <div className="text-sm text-muted leading-relaxed whitespace-pre-line">
               {property.description}
@@ -149,7 +149,7 @@ export default function PropertyDetailPage() {
         {/* Right: Details sidebar */}
         <div className="space-y-6">
           {/* Price card */}
-          <div className="rounded-xl bg-white border border-border shadow-sm p-6">
+          <div className="rounded-xl bg-surface border border-border shadow-sm p-6">
             {property.type && (
               <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase mb-3">
                 For {property.type}
@@ -172,28 +172,28 @@ export default function PropertyDetailPage() {
           </div>
 
           {/* Property details */}
-          <div className="rounded-xl bg-white border border-border shadow-sm p-6">
+          <div className="rounded-xl bg-surface border border-border shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Property Details</h2>
             <div className="grid grid-cols-2 gap-4">
               {property.bedrooms != null && (
-                <div className="rounded-lg bg-gray-50 p-3 text-center">
+                <div className="rounded-lg bg-surface-alt p-3 text-center">
                   <p className="text-lg font-bold text-foreground">{property.bedrooms}</p>
                   <p className="text-xs text-muted">Bedrooms</p>
                 </div>
               )}
               {property.bathrooms != null && (
-                <div className="rounded-lg bg-gray-50 p-3 text-center">
+                <div className="rounded-lg bg-surface-alt p-3 text-center">
                   <p className="text-lg font-bold text-foreground">{property.bathrooms}</p>
                   <p className="text-xs text-muted">Bathrooms</p>
                 </div>
               )}
               {property.area != null && (
-                <div className="rounded-lg bg-gray-50 p-3 text-center">
+                <div className="rounded-lg bg-surface-alt p-3 text-center">
                   <p className="text-lg font-bold text-foreground">{property.area}</p>
                   <p className="text-xs text-muted">Sq Ft</p>
                 </div>
               )}
-              <div className="rounded-lg bg-gray-50 p-3 text-center">
+              <div className="rounded-lg bg-surface-alt p-3 text-center">
                 <p className="text-lg font-bold text-foreground capitalize">{property.type ?? "—"}</p>
                 <p className="text-xs text-muted">Type</p>
               </div>

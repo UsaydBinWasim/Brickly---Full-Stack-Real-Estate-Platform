@@ -70,7 +70,8 @@ const updateProperty = async (req, res, next) => {
       req.params.id,
       req.user.userId,
       req.user.role,
-      req.body
+      req.body,
+      req.files || []
     );
     res.status(200).json({
       success: true,
