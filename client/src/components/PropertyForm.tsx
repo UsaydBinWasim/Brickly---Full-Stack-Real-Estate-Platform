@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface PropertyFormData {
   title: string;
@@ -15,7 +15,7 @@ interface PropertyFormData {
 
 interface PropertyFormProps {
   initialData?: Partial<PropertyFormData>;
-  onSubmit: (data: PropertyFormData) => void;
+  onSubmit: (data: PropertyFormData, images: File[]) => void;
   submitLabel?: string;
   loading?: boolean;
 }
@@ -41,6 +41,9 @@ export default function PropertyForm({
     ...emptyForm,
     ...initialData,
   });
+  const [images, setImages] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -48,9 +51,29 @@ export default function PropertyForm({
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (images.length + files.length > 6) {
+      alert("Maximum 6 images allowed");
+      return;
+    }
+    const newImages = [...images, ...files];
+    setImages(newImages);
+
+    // Generate previews
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setPreviews((prev) => [...prev, ...newPreviews]);
+  };
+
+  const removeImage = (index: number) => {
+    URL.revokeObjectURL(previews[index]);
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(form);
+    onSubmit(form, images);
   };
 
   return (
@@ -162,6 +185,50 @@ export default function PropertyForm({
             placeholder="1200"
           />
         </div>
+      </div>
+
+      {/* Image Upload */}
+      <div>
+        <label className="block text-sm font-medium text-foreground mb-1">
+          Property Images (max 6)
+        </label>
+        <div
+          onClick={() => fileInputRef.current?.click()}
+          className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
+        >
+          <svg className="w-8 h-8 mx-auto text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <p className="text-sm text-muted">Click to upload images</p>
+          <p className="text-xs text-muted mt-1">JPG, PNG, WebP — max 5MB each</p>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+            onChange={handleImageChange}
+            className="hidden"
+          />
+        </div>
+
+        {/* Image Previews */}
+        {previews.length > 0 && (
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            {previews.map((src, i) => (
+              <div key={i} className="relative group rounded-lg overflow-hidden h-24">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => removeImage(i)}
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Submit */}

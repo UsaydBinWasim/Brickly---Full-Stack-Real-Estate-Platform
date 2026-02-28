@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const propertyController = require("../controllers/property.controller");
 const { protect } = require("../middleware/auth.middleware");
+const upload = require("../middleware/upload.middleware");
 
-router.post("/", protect, propertyController.createProperty);
+router.post("/", protect, upload.array("images", 6), propertyController.createProperty);
 router.get("/", propertyController.getProperties);
 router.get("/my", protect, propertyController.getUserProperties);
 router.get("/:id", propertyController.getPropertyById);

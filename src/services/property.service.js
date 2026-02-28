@@ -3,9 +3,15 @@ const Property = require("../models/property.model");
 /**
  * Create a new property listing.
  */
-const createProperty = async (data, userId) => {
+const createProperty = async (data, userId, files = []) => {
+  const images = files.map((file) => ({
+    url: file.path,
+    publicId: file.filename,
+  }));
+
   const property = await Property.create({
     ...data,
+    images,
     user: userId,
     status: "pending",
   });

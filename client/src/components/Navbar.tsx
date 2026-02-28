@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
-import { getToken, logout } from "@/lib/api";
+import { useState, useEffect, useSyncExternalStore } from "react";
+import { getToken, logout, apiFetch } from "@/lib/api";
 
 const publicLinks = [
   { href: "/", label: "Home" },
@@ -31,14 +31,30 @@ function useAuthUser() {
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [unread, setUnread] = useState(0);
   const user = useAuthUser();
 
   const isLoggedIn = !!user && !!getToken();
   const isAdmin = user?.role === "admin";
 
+  // Fetch unread message count
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const fetchUnread = async () => {
+      try {
+        const res = await apiFetch<{ count: number }>("/chat/unread");
+        if (res.success) setUnread(res.data.count);
+      } catch { /* ignore */ }
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 15000); // poll every 15s
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
+
   const navLinks = [
     ...publicLinks,
     ...(isLoggedIn ? [{ href: "/dashboard", label: "Dashboard" }] : []),
+    ...(isLoggedIn ? [{ href: "/chat", label: "Messages", badge: unread }] : []),
     ...(isAdmin ? [{ href: "/admin", label: "Admin" }] : []),
   ];
 
@@ -56,9 +72,14 @@ export default function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-sm font-medium text-muted hover:text-foreground transition-colors"
+                className="relative text-sm font-medium text-muted hover:text-foreground transition-colors"
               >
                 {link.label}
+                {"badge" in link && (link as { badge: number }).badge > 0 && (
+                  <span className="absolute -top-2 -right-4 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    {(link as { badge: number }).badge > 9 ? "9+" : (link as { badge: number }).badge}
+                  </span>
+                )}
               </Link>
             </li>
           ))}

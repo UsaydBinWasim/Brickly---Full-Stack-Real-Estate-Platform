@@ -1,18 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { apiFetch, getToken } from "@/lib/api";
+import { apiFetch, getToken, getUser } from "@/lib/api";
 import type { Property } from "@/types";
 
 export default function PropertyDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params?.id as string;
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [favMsg, setFavMsg] = useState("");
+  const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -86,25 +89,53 @@ export default function PropertyDetailPage() {
         {/* Left: Image gallery + Description */}
         <div className="lg:col-span-2 space-y-6">
           {/* Main image */}
-          <div className="rounded-xl overflow-hidden bg-linear-to-br from-blue-100 to-blue-50 h-80 sm:h-96 flex items-center justify-center">
-            <svg className="w-20 h-20 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" />
-            </svg>
+          <div className="rounded-xl overflow-hidden bg-linear-to-br from-blue-100 to-blue-50 h-80 sm:h-96 flex items-center justify-center relative">
+            {property.images && property.images.length > 0 ? (
+              <Image
+                src={property.images[activeImage]?.url}
+                alt={property.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 66vw"
+                priority
+              />
+            ) : (
+              <svg className="w-20 h-20 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" />
+              </svg>
+            )}
           </div>
 
           {/* Thumbnail row */}
-          <div className="grid grid-cols-4 gap-3">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="rounded-lg overflow-hidden bg-linear-to-br from-gray-100 to-gray-50 h-20 flex items-center justify-center"
-              >
-                <svg className="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-            ))}
-          </div>
+          {property.images && property.images.length > 1 && (
+            <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
+              {property.images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImage(i)}
+                  className={`rounded-lg overflow-hidden h-20 border-2 transition-colors relative ${
+                    activeImage === i ? "border-primary" : "border-transparent hover:border-gray-300"
+                  }`}
+                >
+                  <Image src={img.url} alt={`Photo ${i + 1}`} fill className="object-cover" sizes="100px" />
+                </button>
+              ))}
+            </div>
+          )}
+          {(!property.images || property.images.length <= 1) && (
+            <div className="grid grid-cols-4 gap-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-lg overflow-hidden bg-linear-to-br from-gray-100 to-gray-50 h-20 flex items-center justify-center"
+                >
+                  <svg className="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Description */}
           <div className="rounded-xl bg-white border border-border shadow-sm p-6">
@@ -184,11 +215,32 @@ export default function PropertyDetailPage() {
           )}
 
           {/* Contact owner */}
-          <button className="w-full rounded-xl border-2 border-primary px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors flex items-center justify-center gap-2">
+          <button
+            onClick={async () => {
+              if (!getToken()) {
+                router.push("/login");
+                return;
+              }
+              const user = getUser();
+              if (user?._id === property.user._id) return;
+              try {
+                const res = await apiFetch<{ _id: string }>("/chat/conversations", {
+                  method: "POST",
+                  body: JSON.stringify({ propertyId: property._id }),
+                });
+                if (res.success) {
+                  router.push(`/chat?c=${res.data._id}`);
+                }
+              } catch {
+                alert("Failed to start conversation");
+              }
+            }}
+            className="w-full rounded-xl border-2 border-primary px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
+          >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            Contact Owner
+            Contact Seller
           </button>
         </div>
       </div>

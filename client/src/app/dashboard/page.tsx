@@ -51,21 +51,23 @@ export default function DashboardPage() {
     }
   };
 
-  const handleCreate = async (data: { title: string; description: string; price: string; location: string; bedrooms: string; bathrooms: string; area: string; type: "rent" | "sale" }) => {
+  const handleCreate = async (data: { title: string; description: string; price: string; location: string; bedrooms: string; bathrooms: string; area: string; type: "rent" | "sale" }, images: File[] = []) => {
     setFormLoading(true);
     try {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("price", data.price);
+      formData.append("location", data.location);
+      formData.append("bedrooms", data.bedrooms);
+      formData.append("bathrooms", data.bathrooms);
+      formData.append("area", data.area);
+      formData.append("type", data.type);
+      images.forEach((img) => formData.append("images", img));
+
       const res = await apiFetch<Property>("/properties", {
         method: "POST",
-        body: JSON.stringify({
-          title: data.title,
-          description: data.description,
-          price: Number(data.price),
-          location: data.location,
-          bedrooms: Number(data.bedrooms),
-          bathrooms: Number(data.bathrooms),
-          area: Number(data.area),
-          type: data.type,
-        }),
+        body: formData,
       });
       if (res.success) {
         setShowForm(false);

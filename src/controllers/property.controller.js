@@ -7,7 +7,8 @@ const createProperty = async (req, res, next) => {
   try {
     const property = await propertyService.createProperty(
       req.body,
-      req.user.userId
+      req.user.userId,
+      req.files || []
     );
     res.status(201).json({
       success: true,

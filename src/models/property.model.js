@@ -48,6 +48,12 @@ const propertySchema = new mongoose.Schema({
     },
     default: "pending",
   },
+  images: [
+    {
+      url: { type: String, required: true },
+      publicId: { type: String, required: true },
+    },
+  ],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

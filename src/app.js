@@ -7,6 +7,7 @@ const authRoutes = require("./routes/auth.routes");
 const propertyRoutes = require("./routes/property.routes");
 const favoriteRoutes = require("./routes/favorite.routes");
 const adminRoutes = require("./routes/admin.routes");
+const chatRoutes = require("./routes/chat.routes");
 const errorHandler = require("./middleware/error.middleware");
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/properties", propertyRoutes);
 app.use("/api/favorites", favoriteRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/chat", chatRoutes);
 
 // --------------- 404 Handler ---------------------
 app.use((_req, res) => {
