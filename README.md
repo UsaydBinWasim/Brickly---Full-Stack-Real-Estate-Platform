@@ -6,7 +6,7 @@ Brickly is a full-stack real estate listing SaaS application that lets users bro
 
 ## Table of Contents
 
-- [Features](#features)
+- [Featuress](#features)
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
 - [Folder Structure](#folder-structure)
